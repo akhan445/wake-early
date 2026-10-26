@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Ring the alarm, solve an easy maze, and watch the rings on Home.
   Commit: `Add alarm, draggable maze, and home rings`
 
-- [ ] **3. Home shows progress from a sample week, and Sleep shows the bars**
+- [x] **3. Home shows progress from a sample week, and Sleep shows the bars**
   Becomes usable: Home shows the goal ladder, this-week counts, and last-week vs. this-week columns; Sleep shows a "Going to bed" button and bars for the sample week with dashed 11 pm–6 am lines.
   Why now: Fills out the chain and the progress story for the demo once the kernel works.
   PRD ref: `prd.md > Rings, ladder, and completion`, `prd.md > Bedtime and sleep bars`, `prd.md > Sample week for the demo`

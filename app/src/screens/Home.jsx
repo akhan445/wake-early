@@ -9,7 +9,7 @@ function Ring({ r, value, color }) {
   return (
     <>
       <circle r={r} className="ring-track" />
-      <circle r={r} className="ring-fill" stroke={color} strokeDasharray={`${c * Math.max(value, 0.001)} ${c}`} />
+      <circle r={r} className="ring-fill" stroke={color} strokeDasharray={`${c * value} ${c}`} style={{ opacity: value > 0 ? 1 : 0 }} />
     </>
   )
 }
@@ -102,7 +102,7 @@ export default function Home({ now, drinks, wokeOnTime, celebrate, onCelebrated 
       <div className="card">
         <div className="graph-head"><span>This week</span></div>
         <p className="stat">☕ Under your caffeine line <b>{underCount + (underLine && drinks.length ? 1 : 0)} days</b></p>
-        <p className="stat">🛏 In bed on time <b>{bedCount} days</b></p>
+        <p className="stat">🛏 In bed on time <b>{bedCount} {bedCount === 1 ? 'day' : 'days'}</b></p>
       </div>
 
       <div className="card">

@@ -31,7 +31,7 @@ function save(key, value) {
 }
 
 export default function App() {
-  const [tab, setTab] = useState('coffee')
+  const [tab, setTab] = useState(() => window.location.hash.slice(1) || 'coffee')
   const [drinks, setDrinks] = useState(() => load('we.today', []))
   const [wokeOnTime, setWokeOnTime] = useState(() => load('we.wake', false))
   const [bedTappedAt, setBedTappedAt] = useState(() => load('we.bed', null))

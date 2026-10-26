@@ -257,3 +257,22 @@ h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.02em; }
 .col-bar.last { background: rgba(36, 28, 22, 0.25); }
 .col-bar.this { background: linear-gradient(180deg, var(--wake), var(--wake-deep)); }
 .col small { font-weight: 600; }
+
+/* Sleep */
+.sleep { position: relative; min-height: 100%; }
+.stars { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.stars i { position: absolute; bottom: -10px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff; animation: drift linear infinite; opacity: 0.8; }
+@keyframes drift { from { transform: translateY(0); } to { transform: translateY(-900px); } }
+.sleep > *:not(.stars) { position: relative; z-index: 1; }
+.bed-btn { background: #8a8ef5; box-shadow: 0 8px 22px rgba(91, 95, 199, 0.5); }
+.goodnight { font-size: 15px; }
+.bars { position: relative; padding: 22px 0 4px 40px; }
+.window-layer { position: absolute; left: 40px; right: 0; top: 14px; bottom: 0; z-index: 2; pointer-events: none; }
+.window-line { position: absolute; top: 0; bottom: 0; border-left: 2px dashed rgba(255, 255, 255, 0.7); }
+.window-line span { position: absolute; top: -16px; left: -10px; font-size: 11px; color: #b9bde8; }
+.bar-row { display: flex; align-items: center; height: 34px; margin-left: -40px; }
+.bar-day { width: 40px; font-size: 12px; color: #b9bde8; }
+.bar-track { position: relative; flex: 1; height: 22px; }
+.bar { position: absolute; top: 0; height: 22px; border-radius: 11px; background: linear-gradient(90deg, #f2953a, #d96b5a); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.bar.inside { background: linear-gradient(90deg, #8a8ef5, #b7baff); }
+.bar small { font-size: 10px; font-weight: 700; color: #fff; white-space: nowrap; }
