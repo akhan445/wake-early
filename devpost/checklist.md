@@ -48,6 +48,8 @@ Build mode: fast
 
 - [x] Revert pour animation, remove sound; travel mug handle, jar silver lid, paper cup with green lid
 - [x] Living backgrounds for coffee, alarm, home; sunrise after maze
+- [x] Bigger, faster sun with rays; latte background back on Coffee
+- [x] Morning check-in after the maze
 - [ ] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
@@ -66,3 +68,5 @@ Activity mode:
 - Home progress (ladder, this-week counts, week columns) and the sample week were built in slice 2 instead of slice 3 — the ladder needed the sample history to show the "goal reached" moment after the maze; slice 3 is now just Sleep.
 - Coffee pour reverted to the straight stream and the pour sound removed; travel mug gets a handle, mason jar a silver lid, new paper cup with green lid — learner feedback at final review.
 - Living backgrounds added (coffee: dark espresso with rising bubbles; alarm: dawn sky with a slow curved sunrise and birds; home: floating warm light) and a sunrise animation after the maze — learner wanted every screen to feel like Sleep. Reverses the spec's "gradients instead of animated scenes" simplification.
+- Morning check-in built after the maze (yesterday's sample drinks + bedtime, or tonight's "Going to bed" tap) — learner chose to add it back from the deferred list at final review. Onboarding remains deferred.
+- Sun made bigger with rotating rays and faster; coffee background returned to the light latte gradient with the moving bubbles kept — learner feedback.

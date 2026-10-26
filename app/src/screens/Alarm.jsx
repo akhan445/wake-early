@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DIFFICULTY, generateMaze, canMove } from '../lib/maze.js'
+import { SAMPLE_THIS_WEEK } from '../data/sampleWeek.js'
 
 // Gentle repeating two-tone alarm made with the Web Audio API.
 function startAlarmSound() {
@@ -136,14 +137,100 @@ function Maze({ difficulty, onSolved }) {
   )
 }
 
-export default function Alarm({ onSolved }) {
+const fmt12 = (hhmm) => {
+  const [h, m] = hhmm.split(':').map(Number)
+  return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'am' : 'pm'}`
+}
+
+// Morning check-in: confirms yesterday's caffeine and bedtime in two taps.
+function CheckIn({ bedTappedAt, onDone }) {
+  const yesterday = SAMPLE_THIS_WEEK.find((d) => d.daysAgo === 1)
+  const [drinks, setDrinks] = useState(yesterday.drinks)
+  const [caffeineDone, setCaffeineDone] = useState(false)
+  const [adding, setAdding] = useState(false)
+  const [extra, setExtra] = useState({ name: '', mg: '' })
+  const tapped = bedTappedAt ? new Date(bedTappedAt) : null
+  const initialBed = tapped ? `${String(tapped.getHours()).padStart(2, '0')}:${String(tapped.getMinutes()).padStart(2, '0')}` : yesterday.bed
+  const [bed, setBed] = useState(initialBed)
+  const [bedDone, setBedDone] = useState(false)
+  const [editingBed, setEditingBed] = useState(false)
+  const total = drinks.reduce((s, d) => s + d.mg, 0)
+  const [bh] = bed.split(':').map(Number)
+  const bedOnTime = bh >= 12 && bed <= '23:00'
+
+  const addExtra = (e) => {
+    e.preventDefault()
+    const mg = Number(extra.mg)
+    if (!mg) return
+    setDrinks([...drinks, { name: extra.name.trim() || 'Other drink', mg, time: 'later' }])
+    setExtra({ name: '', mg: '' })
+    setAdding(false)
+    setCaffeineDone(true)
+  }
+
+  return (
+    <div className="pad ringing">
+      <h1 className="center">Quick check-in</h1>
+      <p className="muted center">Let's close out yesterday.</p>
+
+      <div className="card checkin">
+        <h3>☕ Yesterday's caffeine · {total} mg</h3>
+        <ul className="log">
+          {drinks.map((d, i) => (
+            <li key={i}><span>{d.time} · {d.name}</span><span className="mg">{d.mg} mg</span></li>
+          ))}
+        </ul>
+        {!caffeineDone && !adding && (
+          <div className="row">
+            <button className="primary" onClick={() => setCaffeineDone(true)}>That's everything</button>
+            <button onClick={() => setAdding(true)}>Add one</button>
+          </div>
+        )}
+        {adding && (
+          <form className="row" onSubmit={addExtra}>
+            <input placeholder="Drink" value={extra.name} onChange={(e) => setExtra({ ...extra, name: e.target.value })} />
+            <input placeholder="mg" type="number" style={{ flex: '0 0 70px' }} value={extra.mg} onChange={(e) => setExtra({ ...extra, mg: e.target.value })} />
+            <button className="primary" type="submit" style={{ flex: '0 0 auto' }}>Add</button>
+          </form>
+        )}
+        {caffeineDone && <p className="answer">Under your line all day ✓</p>}
+      </div>
+
+      <div className="card checkin">
+        <h3>🛏 In bed at {fmt12(bed)}?</h3>
+        {!bedDone && !editingBed && (
+          <div className="row">
+            <button className="primary" onClick={() => setBedDone(true)}>Yes</button>
+            <button onClick={() => setEditingBed(true)}>Edit</button>
+          </div>
+        )}
+        {editingBed && (
+          <div className="row">
+            <input type="time" value={bed} onChange={(e) => setBed(e.target.value)} />
+            <button className="primary" style={{ flex: '0 0 auto' }} onClick={() => { setEditingBed(false); setBedDone(true) }}>Save</button>
+          </div>
+        )}
+        {bedDone && <p className="answer">{bedOnTime ? 'In bed on time ✓' : 'A little after 11. Tonight is a fresh chance.'}</p>}
+      </div>
+
+      {caffeineDone && bedDone && (
+        <button className="btn big wake-btn" onClick={onDone}>See today →</button>
+      )}
+    </div>
+  )
+}
+
+export default function Alarm({ onSolved, bedTappedAt }) {
   const [difficulty, setDifficulty] = useState('easy')
   const [ringing, setRinging] = useState(false)
+  const [checkingIn, setCheckingIn] = useState(false)
 
   useEffect(() => {
     if (!ringing) return
     return startAlarmSound()
   }, [ringing])
+
+  if (checkingIn) return <CheckIn bedTappedAt={bedTappedAt} onDone={() => { setCheckingIn(false); onSolved() }} />
 
   if (ringing) {
     return (
@@ -155,7 +242,7 @@ export default function Alarm({ onSolved }) {
           difficulty={difficulty}
           onSolved={() => {
             setRinging(false)
-            onSolved()
+            setCheckingIn(true)
           }}
         />
       </div>

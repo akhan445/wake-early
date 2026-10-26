@@ -5,7 +5,13 @@ export const SAMPLE_THIS_WEEK = [
   { daysAgo: 4, bed: '23:10', wake: '06:00', underLine: true },
   { daysAgo: 3, bed: '00:15', wake: '07:45', underLine: false },
   { daysAgo: 2, bed: '22:55', wake: '05:55', underLine: true },
-  { daysAgo: 1, bed: '23:30', wake: '06:40', underLine: true },
+  {
+    daysAgo: 1, bed: '23:30', wake: '06:40', underLine: true,
+    drinks: [
+      { name: 'Tim Hortons Original Blend (Medium)', mg: 205, time: '8:15 am' },
+      { name: 'Espresso (single shot)', mg: 64, time: '1:40 pm' },
+    ],
+  },
 ]
 
 export const SAMPLE_LAST_WEEK = { onTime: 1 }

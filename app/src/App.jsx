@@ -92,7 +92,7 @@ export default function App() {
           {tab === 'home' && (
             <Home now={now} drinks={drinks} wokeOnTime={wokeOnTime} celebrate={celebrate} onCelebrated={() => setCelebrate(false)} />
           )}
-          {tab === 'alarm' && <Alarm onSolved={handleWake} />}
+          {tab === 'alarm' && <Alarm onSolved={handleWake} bedTappedAt={bedTappedAt} />}
           {tab === 'coffee' && (
             <Coffee now={now} drinks={drinks} pourCount={pourCount} onAdd={addDrink} onRemove={(key) => setDrinks((list) => list.filter((d) => d.key !== key))} onClear={() => setDrinks([])} vessel={vessel} setVessel={setVessel} demoHour={demoHour} setDemoHour={setDemoHour} />
           )}
