@@ -60,7 +60,7 @@ function Maze({ difficulty, onSolved }) {
       const next = [...t, target]
       if (target[0] === N - 1 && target[1] === N - 1) {
         setDone(true)
-        setTimeout(onSolved, 1300)
+        setTimeout(onSolved, 2800)
       }
       return next
     })
@@ -105,6 +105,12 @@ function Maze({ difficulty, onSolved }) {
 
   return (
     <div className={`maze-wrap ${done ? 'done' : ''}`}>
+      {done && (
+        <div className="sunrise">
+          <div className="big-sun" />
+          <p>Good morning ☀️</p>
+        </div>
+      )}
       <svg
         ref={svgRef}
         viewBox={`-3 -3 ${W + 6} ${W + 6}`}

@@ -3,6 +3,7 @@ import Home from './screens/Home.jsx'
 import Alarm from './screens/Alarm.jsx'
 import Coffee from './screens/Coffee.jsx'
 import Sleep from './screens/Sleep.jsx'
+import Backdrop from './Backdrop.jsx'
 
 const TABS = [
   { id: 'home', label: 'Home', icon: '☀️' },
@@ -86,6 +87,7 @@ export default function App() {
   return (
     <div className="stage">
       <div className={`phone theme-${tab}`}>
+        <Backdrop tab={tab} />
         <main className="screen">
           {tab === 'home' && (
             <Home now={now} drinks={drinks} wokeOnTime={wokeOnTime} celebrate={celebrate} onCelebrated={() => setCelebrate(false)} />
