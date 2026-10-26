@@ -42,7 +42,7 @@ Build mode: fast
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 1 (Coffee): learner asked for side pour + sound, longer red line, per-drink remove, vessel picker; all built in c0d3171 (retry folded into final review for time)
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
 
@@ -51,7 +51,7 @@ Build mode: fast
 - [x] Bigger, faster sun with rays; latte background back on Coffee
 - [x] Morning check-in after the maze
 - [x] Onboarding and editable alarm settings
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Final review complete — feedback resolved and learner confirms ready to ship ("seems okay… not perfect but just")
 
 ## Code Tour and App Map
 
@@ -59,7 +59,7 @@ Build mode: fast
 - [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
 - [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence:
+Activity and evidence: Deferred — learner chose to submit before the deadline; offered to do the wrap-up and app map after submission.
 Route and stops:
 Edit outcome:
 Reflection:
