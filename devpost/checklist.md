@@ -41,7 +41,7 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 1 (Coffee)
+- [x] Early usable behavior explored — after slice 1 (Coffee): learner asked for side pour + sound, longer red line, per-drink remove, vessel picker; all built in c0d3171 (retry folded into final review for time)
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
