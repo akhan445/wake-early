@@ -36,6 +36,21 @@ export default function App() {
   const [wokeOnTime, setWokeOnTime] = useState(() => load('we.wake', false))
   const [bedTappedAt, setBedTappedAt] = useState(() => load('we.bed', null))
   const [celebrate, setCelebrate] = useState(false)
+  const [vessel, setVesselState] = useState(() => {
+    try {
+      return localStorage.getItem('we.vessel') || 'mug'
+    } catch {
+      return 'mug'
+    }
+  })
+  const setVessel = (v) => {
+    setVesselState(v)
+    try {
+      localStorage.setItem('we.vessel', v)
+    } catch {
+      // ignore
+    }
+  }
   // Demo clock: lets the video show the cup draining across a day.
   const [demoHour, setDemoHour] = useState(null)
   const [tick, setTick] = useState(Date.now())
@@ -56,7 +71,11 @@ export default function App() {
     return d.getTime()
   })()
 
-  const addDrink = (drink) => setDrinks((list) => [...list, { ...drink, time: now, key: `${drink.id}-${now}-${list.length}` }])
+  const [pourCount, setPourCount] = useState(0)
+  const addDrink = (drink) => {
+    setPourCount((n) => n + 1)
+    setDrinks((list) => [...list, { ...drink, time: now, key: `${drink.id}-${now}-${list.length}` }])
+  }
 
   const handleWake = () => {
     setWokeOnTime(true)
@@ -73,7 +92,7 @@ export default function App() {
           )}
           {tab === 'alarm' && <Alarm onSolved={handleWake} />}
           {tab === 'coffee' && (
-            <Coffee now={now} drinks={drinks} onAdd={addDrink} onClear={() => setDrinks([])} demoHour={demoHour} setDemoHour={setDemoHour} />
+            <Coffee now={now} drinks={drinks} pourCount={pourCount} onAdd={addDrink} onRemove={(key) => setDrinks((list) => list.filter((d) => d.key !== key))} onClear={() => setDrinks([])} vessel={vessel} setVessel={setVessel} demoHour={demoHour} setDemoHour={setDemoHour} />
           )}
           {tab === 'sleep' && <Sleep bedTappedAt={bedTappedAt} onBed={() => setBedTappedAt(Date.now())} />}
         </main>

@@ -55,20 +55,30 @@ h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.02em; }
 .nav-icon { font-size: 22px; }
 
 /* Coffee: the vessel */
-.vessel-wrap { position: relative; height: 270px; display: flex; justify-content: center; align-items: flex-end; margin: 4px 0 8px; }
-.stream {
-  position: absolute; top: 0; left: calc(50% - 22px); width: 9px; height: 0;
-  background: linear-gradient(180deg, #8b5a36, #6f4527); border-radius: 6px; opacity: 0;
+.vessel-picker { display: flex; justify-content: flex-end; gap: 6px; margin: -6px 0 4px; }
+.vessel-picker button {
+  width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--line); background: var(--card);
+  display: grid; place-items: center; padding: 0;
 }
-.stream.on { animation: pour 1.4s ease-in-out forwards; }
-@keyframes pour {
-  0% { height: 0; opacity: 1; top: 0; }
-  25% { height: 210px; opacity: 1; top: 0; }
-  75% { height: 210px; opacity: 1; top: 0; }
-  100% { height: 0; opacity: 1; top: 210px; }
+.vessel-picker button.on { border-color: var(--caf-deep); background: #fff; box-shadow: 0 2px 8px rgba(111, 69, 39, 0.2); }
+.vessel-picker svg { width: 24px; height: 24px; fill: rgba(168, 114, 74, 0.25); stroke: var(--caf-deep); stroke-width: 1.4; stroke-linejoin: round; }
+.vessel-picker svg .straw { stroke: var(--warn); stroke-width: 2; stroke-dasharray: 1.5 1.5; }
+
+.vessel-wrap { position: relative; height: 280px; display: flex; justify-content: center; align-items: flex-end; margin: 0 0 8px; }
+.pour { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; pointer-events: none; overflow: visible; }
+.pour .carafe { fill: rgba(255, 255, 255, 0.9); stroke: var(--caf-deep); stroke-width: 2; transform-origin: 66px 70px; opacity: 0; transform: rotate(0deg) translate(-20px, 0); transition: transform 0.35s ease, opacity 0.25s; }
+.pour.on .carafe { opacity: 1; transform: rotate(28deg) translate(0, 0); }
+.stream-path { fill: none; stroke: #7a4b2b; stroke-width: 7; stroke-linecap: round; stroke-dasharray: 160; stroke-dashoffset: 160; opacity: 0; }
+.pour.on .stream-path { animation: stream 1.5s ease-in-out forwards; }
+@keyframes stream {
+  0% { stroke-dashoffset: 160; opacity: 1; }
+  22% { stroke-dashoffset: 0; opacity: 1; }
+  78% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: -160; opacity: 1; }
 }
-.mug { position: relative; width: 170px; height: 200px; }
-.mug-inner {
+
+.vessel { position: relative; width: 170px; height: 200px; }
+.vessel-inner {
   position: absolute; inset: 0; border: 6px solid #fffaf4; border-top: 0;
   border-radius: 0 0 38px 38px; background: rgba(255, 255, 255, 0.45);
   overflow: hidden; box-shadow: inset 0 -6px 18px rgba(111, 69, 39, 0.12), 0 12px 30px rgba(111, 69, 39, 0.2);
@@ -78,12 +88,44 @@ h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.02em; }
   border: 12px solid #fffaf4; border-left: 0; border-radius: 0 40px 40px 0;
   box-shadow: 6px 6px 18px rgba(111, 69, 39, 0.15);
 }
+.vessel-travel { width: 124px; height: 210px; }
+.vessel-travel .vessel-inner {
+  border: 0; border-radius: 0 0 16px 16px; clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+  background: linear-gradient(90deg, rgba(255,255,255,.55), rgba(255,255,255,.3));
+}
+.travel-lid {
+  position: absolute; top: -26px; left: -8px; right: -8px; height: 26px; z-index: 4;
+  background: #3a2a20; border-radius: 12px 12px 4px 4px; box-shadow: 0 4px 10px rgba(0,0,0,.2);
+}
+.travel-lid::before { content: ''; position: absolute; top: -8px; left: 30%; width: 34%; height: 10px; background: #3a2a20; border-radius: 6px 6px 0 0; }
+.vessel-jar { width: 160px; height: 210px; }
+.vessel-jar .vessel-inner {
+  border: 5px solid rgba(255, 255, 255, 0.95); border-radius: 22px 22px 28px 28px;
+  background: rgba(255, 255, 255, 0.28);
+}
+.vessel-jar .vessel-inner::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 22px; z-index: 3;
+  background: repeating-linear-gradient(180deg, rgba(255,255,255,.75) 0 3px, transparent 3px 7px);
+}
+.vessel-jar .liquid { background: linear-gradient(180deg, rgba(214, 170, 128, 0.85), rgba(160, 108, 70, 0.9)); }
+.vessel-jar .liquid-wave { display: none; }
+.ice {
+  position: absolute; width: 36px; height: 32px; border-radius: 8px; z-index: 1;
+  background: rgba(255, 255, 255, 0.55); border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: inset 4px 4px 0 rgba(255,255,255,.5);
+}
+.straw {
+  position: absolute; left: 58%; top: -58px; width: 12px; height: 230px; z-index: 0;
+  transform: rotate(12deg); transform-origin: bottom center; border-radius: 6px;
+  background: repeating-linear-gradient(160deg, #d64235 0 8px, #fff 8px 16px);
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
 .liquid {
   position: absolute; left: 0; right: 0; bottom: 0;
   background: linear-gradient(180deg, rgba(166, 112, 70, 0.82) 0%, rgba(111, 69, 39, 0.92) 100%);
   transition: height 1.4s ease-out;
 }
-.liquid.pouring { transition: height 1s ease-out 0.35s; }
+.liquid.pouring { transition: height 1s ease-out 0.4s; }
 .liquid.over { background: linear-gradient(180deg, rgba(196, 92, 62, 0.85), rgba(130, 52, 34, 0.95)); }
 .liquid-wave {
   position: absolute; top: -6px; left: -50%; width: 200%; height: 12px;
@@ -91,15 +133,12 @@ h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.02em; }
   animation: wave 3s linear infinite;
 }
 @keyframes wave { to { transform: translateX(25%); } }
-.level-line, .max-line { position: absolute; left: 0; right: 0; height: 0; transition: bottom 1.4s ease-out; }
-.level-line { border-top: 3px solid #fff; z-index: 2; }
-.max-line { border-top: 3px dotted var(--warn); z-index: 3; }
-.level-line span, .max-line span {
-  position: absolute; right: 6px; transform: translateY(-120%);
-  font-size: 12px; font-weight: 700; padding: 1px 6px; border-radius: 6px;
-}
-.level-line span { background: #fff; color: var(--caf-deep); left: 6px; right: auto; transform: translateY(4px); }
-.max-line span { background: var(--warn); color: #fff; }
+.level-line, .max-line { position: absolute; height: 0; transition: bottom 1.4s ease-out; }
+.level-line { left: 0; right: 0; border-top: 3px solid #fff; z-index: 2; }
+.max-line { left: -22px; right: -22px; border-top: 3px dotted var(--warn); z-index: 6; }
+.level-line span, .max-line span { position: absolute; font-size: 12px; font-weight: 700; padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+.level-line span { background: #fff; color: var(--caf-deep); left: 6px; top: 4px; }
+.max-line span { background: var(--warn); color: #fff; right: 0; top: -22px; }
 
 .room { text-align: center; font-weight: 600; margin: 4px 0 0; }
 
@@ -127,3 +166,9 @@ h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.02em; }
 .log li { display: flex; justify-content: space-between; font-size: 14px; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .link { background: none; border: 0; color: var(--muted); text-decoration: underline; font-size: 13px; padding: 0; }
 .demo input[type='range'] { width: 100%; accent-color: var(--caf); }
+.row-end { display: flex; align-items: center; gap: 8px; }
+.remove {
+  width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); background: #fff;
+  line-height: 1; font-size: 16px; color: var(--muted); padding: 0;
+}
+.remove:hover { color: var(--warn); border-color: var(--warn); }
