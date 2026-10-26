@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { searchDrinks } from '../data/drinks.js'
-import { mgNow, limitNow, curve, bedtimeFor, SLEEP_OK_MG } from '../lib/caffeine.js'
+import { mgNow, limitNow, curve, bedtimeFor, SLEEP_OK_MG, hoursOf, fmtHHMM } from '../lib/caffeine.js'
 
 const CUP_MAX_MG = 400
 const fmtTime = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
@@ -87,12 +87,13 @@ function Vessel({ mg, limit, pourKey, type }) {
   )
 }
 
-function FadeGraph({ drinks, now }) {
-  const points = curve(drinks, now)
+function FadeGraph({ drinks, now, bed }) {
+  const bedHour = hoursOf(bed)
+  const points = curve(drinks, now, bedHour)
   if (points.length < 2) return <p className="muted small">It's past bedtime. Tomorrow starts fresh.</p>
   const W = 320, H = 110, P = 8
   const peak = Math.max(120, ...points.map((p) => p.mg))
-  const x = (t) => P + ((t - now) / (bedtimeFor(now) - now)) * (W - 2 * P)
+  const x = (t) => P + ((t - now) / (bedtimeFor(now, bedHour) - now)) * (W - 2 * P)
   const y = (mg) => H - P - (mg / peak) * (H - 2 * P)
   const path = points.map((p, i) => `${i ? 'L' : 'M'}${x(p.t).toFixed(1)},${y(p.mg).toFixed(1)}`).join(' ')
   const atBed = points[points.length - 1].mg
@@ -100,7 +101,7 @@ function FadeGraph({ drinks, now }) {
     <div className="graph card">
       <div className="graph-head">
         <span>Caffeine until bedtime</span>
-        <span className={atBed <= SLEEP_OK_MG ? 'good' : 'warn'}>{Math.round(atBed)} mg at 11 pm</span>
+        <span className={atBed <= SLEEP_OK_MG ? 'good' : 'warn'}>{Math.round(atBed)} mg at {fmtHHMM(bed)}</span>
       </div>
       <svg viewBox={`0 0 ${W} ${H}`}>
         <line x1={P} x2={W - P} y1={y(SLEEP_OK_MG)} y2={y(SLEEP_OK_MG)} className="graph-ok" />
@@ -108,17 +109,17 @@ function FadeGraph({ drinks, now }) {
         <path d={`${path} L${x(points[points.length - 1].t)},${H - P} L${P},${H - P} Z`} className="graph-fill" />
         <path d={path} className="graph-line" />
         <text x={P} y={H - 1} className="graph-label">now</text>
-        <text x={W - P} y={H - 1} textAnchor="end" className="graph-label">11 pm</text>
+        <text x={W - P} y={H - 1} textAnchor="end" className="graph-label">{fmtHHMM(bed)}</text>
       </svg>
     </div>
   )
 }
 
-export default function Coffee({ now, drinks, pourCount, onAdd, onRemove, onClear, vessel, setVessel, demoHour, setDemoHour }) {
+export default function Coffee({ now, drinks, pourCount, onAdd, onRemove, onClear, vessel, setVessel, demoHour, setDemoHour, bed }) {
   const [query, setQuery] = useState('')
   const [custom, setCustom] = useState({ name: '', mg: '' })
   const mg = mgNow(drinks, now)
-  const limit = limitNow(now)
+  const limit = limitNow(now, hoursOf(bed))
   const room = limit - mg
   const results = searchDrinks(query).slice(0, query ? 8 : 5)
 
@@ -147,10 +148,10 @@ export default function Coffee({ now, drinks, pourCount, onAdd, onRemove, onClea
       <p className={`room ${room < 0 ? 'warn' : ''}`}>
         {room >= 0
           ? `You can have about ${Math.round(room)} mg more right now.`
-          : `You're ${Math.round(-room)} mg over the line. This much may make it harder to fall asleep by 11.`}
+          : `You're ${Math.round(-room)} mg over the line. This much may make it harder to fall asleep by ${fmtHHMM(bed)}.`}
       </p>
 
-      <FadeGraph drinks={drinks} now={now} />
+      <FadeGraph drinks={drinks} now={now} bed={bed} />
 
       <div className="card">
         <input className="search" placeholder="Search drinks: Tim Hortons, Starbucks, espresso…" value={query} onChange={(e) => setQuery(e.target.value)} />

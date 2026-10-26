@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { stayedUnderLine, BEDTIME_HOUR, WAKE_HOUR } from '../lib/caffeine.js'
+import { stayedUnderLine, hoursOf, fmtHHMM } from '../lib/caffeine.js'
 import { SAMPLE_THIS_WEEK, SAMPLE_LAST_WEEK, wokeOnTime as dayWokeOnTime, bedOnTime } from '../data/sampleWeek.js'
 
 const GOALS = [1, 2, 4, 7, 30]
@@ -14,16 +14,18 @@ function Ring({ r, value, color }) {
   )
 }
 
-export default function Home({ now, drinks, wokeOnTime, celebrate, onCelebrated }) {
+export default function Home({ now, drinks, wokeOnTime, celebrate, onCelebrated, settings, onRedoOnboarding }) {
   useEffect(() => {
     if (!celebrate) return
     const id = setTimeout(onCelebrated, 3200)
     return () => clearTimeout(id)
   }, [celebrate, onCelebrated])
 
-  const underLine = stayedUnderLine(drinks)
+  const bedHour = hoursOf(settings.bed)
+  const wakeHour = hoursOf(settings.wake)
+  const underLine = stayedUnderLine(drinks, bedHour)
   const hour = new Date(now).getHours() + new Date(now).getMinutes() / 60
-  const dayProgress = Math.min(Math.max((hour - WAKE_HOUR) / (BEDTIME_HOUR - WAKE_HOUR), 0), 1)
+  const dayProgress = Math.min(Math.max((hour - wakeHour) / (bedHour - wakeHour), 0), 1)
 
   const pastOnTime = SAMPLE_THIS_WEEK.filter(dayWokeOnTime).length
   const thisWeekOnTime = pastOnTime + (wokeOnTime ? 1 : 0)
@@ -40,7 +42,7 @@ export default function Home({ now, drinks, wokeOnTime, celebrate, onCelebrated 
       <h1>Today</h1>
       <p className="muted">
         {wokeOnTime
-          ? 'You woke up on time! Keep caffeine under the line and be in bed by 11 to complete today.'
+          ? `You woke up on time! Keep caffeine under the line and be in bed by ${fmtHHMM(settings.bed)} to complete today.`
           : 'Start today by beating your alarm on the Alarm tab.'}
       </p>
 
@@ -73,7 +75,7 @@ export default function Home({ now, drinks, wokeOnTime, celebrate, onCelebrated 
         <div className="path-line" />
         <div className="step">
           <span>🛏</span>
-          <small>Bed by 11</small>
+          <small>Bed by {fmtHHMM(settings.bed)}</small>
         </div>
         <div className="path-line" />
         <div className={`step ${wokeOnTime ? 'done wake' : ''}`}>
@@ -127,6 +129,7 @@ export default function Home({ now, drinks, wokeOnTime, celebrate, onCelebrated 
         </div>
         <p className="small muted center" style={{ margin: '8px 0 0' }}>On-time wake-ups · history is sample data</p>
       </div>
+      <p className="center"><button className="link" onClick={onRedoOnboarding}>Redo onboarding</button></p>
     </div>
   )
 }

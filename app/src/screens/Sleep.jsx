@@ -26,12 +26,13 @@ function Stars() {
   )
 }
 
-export default function Sleep({ bedTappedAt, onBed }) {
+export default function Sleep({ bedTappedAt, onBed, settings }) {
+  const bedH = toHours(settings.bed), wakeH = toHours(settings.wake)
   return (
     <div className="pad sleep">
       <Stars />
       <h1>Sleep tight</h1>
-      <p className="muted">Your nights against your window: in bed by 11 pm, up at 6 am.</p>
+      <p className="muted">Your nights against your window: in bed by {fmt(settings.bed)}, up at {fmt(settings.wake)}.</p>
 
       {bedTappedAt ? (
         <div className="card goodnight">
@@ -45,12 +46,12 @@ export default function Sleep({ bedTappedAt, onBed }) {
         <div className="graph-head"><span>This week</span><span className="small muted" style={{ margin: 0 }}>sample data</span></div>
         <div className="bars">
           <div className="window-layer">
-            <div className="window-line" style={{ left: `${pct(23)}%` }}><span>11p</span></div>
-            <div className="window-line" style={{ left: `${pct(6)}%` }}><span>6a</span></div>
+            <div className="window-line" style={{ left: `${pct(bedH)}%` }}><span>{fmt(settings.bed)}</span></div>
+            <div className="window-line" style={{ left: `${pct(wakeH)}%` }}><span>{fmt(settings.wake)}</span></div>
           </div>
           {SAMPLE_THIS_WEEK.map((d) => {
             const a = pct(toHours(d.bed)), b = pct(toHours(d.wake))
-            const inside = shift(toHours(d.bed)) <= 23 && shift(toHours(d.wake)) <= 30
+            const inside = shift(toHours(d.bed)) <= shift(bedH) && shift(toHours(d.wake)) <= shift(wakeH)
             return (
               <div key={d.daysAgo} className="bar-row">
                 <span className="bar-day">{dayName(d.daysAgo)}</span>

@@ -367,3 +367,21 @@ h1 { font-size: 30px; margin: 8px 0 4px; letter-spacing: -0.02em; }
 .checkin input { padding: 9px 10px; border-radius: 10px; border: 0; min-width: 0; flex: 1; }
 .checkin .answer { margin: 10px 0 0; font-weight: 700; }
 .theme-alarm .checkin .mg { color: #fff1d6; }
+
+/* Onboarding */
+.progress { display: flex; align-items: center; justify-content: space-between; margin: 4px 8px 18px; position: relative; }
+.progress::before { content: ''; position: absolute; left: 14px; right: 14px; top: 50%; height: 3px; background: rgba(255,255,255,.35); }
+.progress .dot { position: relative; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 14px; background: rgba(255,255,255,.5); color: rgba(0,0,0,.45); border: 2px solid rgba(255,255,255,.6); transition: all .3s; }
+.progress .dot.past { background: #fff; color: var(--wake-deep); }
+.progress .dot.now { background: var(--wake-deep); color: #fff; border-color: #fff; transform: scale(1.18); box-shadow: 0 0 0 5px rgba(255,255,255,.25); }
+.theme-coffee .progress .dot.now { background: var(--caf-deep); }
+.theme-sleep .progress .dot.now { background: #8a8ef5; }
+.field { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-weight: 600; }
+.field input { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); }
+.ob-nav { display: flex; align-items: center; gap: 14px; margin-top: 10px; }
+.ob-nav .btn { flex: 1; margin: 0; }
+.theme-sleep .onboarding .segmented button.on, .theme-alarm .onboarding .segmented button.on { color: var(--ink); }
+.schedule { display: flex; gap: 6px; margin-top: 10px; }
+.schedule div { flex: 1; text-align: center; background: rgba(255,255,255,.18); border-radius: 10px; padding: 6px 2px; }
+.schedule small { display: block; font-size: 10px; opacity: .8; }
+.schedule b { font-size: 12px; }

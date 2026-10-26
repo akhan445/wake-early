@@ -50,6 +50,7 @@ Build mode: fast
 - [x] Living backgrounds for coffee, alarm, home; sunrise after maze
 - [x] Bigger, faster sun with rays; latte background back on Coffee
 - [x] Morning check-in after the maze
+- [x] Onboarding and editable alarm settings
 - [ ] Final review complete — feedback resolved and learner confirms ready to ship
 
 ## Code Tour and App Map
@@ -70,3 +71,4 @@ Activity mode:
 - Living backgrounds added (coffee: dark espresso with rising bubbles; alarm: dawn sky with a slow curved sunrise and birds; home: floating warm light) and a sunrise animation after the maze — learner wanted every screen to feel like Sleep. Reverses the spec's "gradients instead of animated scenes" simplification.
 - Morning check-in built after the maze (yesterday's sample drinks + bedtime, or tonight's "Going to bed" tap) — learner chose to add it back from the deferred list at final review. Onboarding remains deferred.
 - Sun made bigger with rotating rays and faster; coffee background returned to the light latte gradient with the moving bubbles kept — learner feedback.
+- Onboarding (4 steps, circle progress, per-section themes) and an editable alarm (target time, cold turkey/phased with a 5-day schedule, difficulty) built at final review — learner asked for them back; settings now drive bedtime in the caffeine math, the sleep window, and Home copy.

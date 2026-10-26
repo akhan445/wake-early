@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { DIFFICULTY, generateMaze, canMove } from '../lib/maze.js'
 import { SAMPLE_THIS_WEEK } from '../data/sampleWeek.js'
+import { alarmSchedule, fmtHHMM } from '../lib/caffeine.js'
 
 // Gentle repeating two-tone alarm made with the Web Audio API.
 function startAlarmSound() {
@@ -220,8 +221,11 @@ function CheckIn({ bedTappedAt, onDone }) {
   )
 }
 
-export default function Alarm({ onSolved, bedTappedAt }) {
-  const [difficulty, setDifficulty] = useState('easy')
+export default function Alarm({ onSolved, bedTappedAt, settings, setSettings }) {
+  const difficulty = settings.difficulty
+  const setDifficulty = (d) => setSettings({ ...settings, difficulty: d })
+  const schedule = alarmSchedule(settings)
+  const days = ['Tomorrow', ...Array.from({ length: 4 }, (_, i) => new Date(Date.now() + (i + 2) * 864e5).toLocaleDateString([], { weekday: 'short' }))]
   const [ringing, setRinging] = useState(false)
   const [checkingIn, setCheckingIn] = useState(false)
 
@@ -236,7 +240,7 @@ export default function Alarm({ onSolved, bedTappedAt }) {
     return (
       <div className="pad ringing">
         <div className="alarm-clock shake">⏰</div>
-        <h1 className="center">6:00 · Rise and shine</h1>
+        <h1 className="center">{fmtHHMM(schedule[0])} · Rise and shine</h1>
         <p className="muted center">Solve the maze to turn off the alarm.</p>
         <Maze
           difficulty={difficulty}
@@ -256,9 +260,27 @@ export default function Alarm({ onSolved, bedTappedAt }) {
       <div className="card alarm-card">
         <div className="alarm-clock wiggle">⏰</div>
         <div>
-          <div className="alarm-time">6:00 am</div>
-          <div className="muted small">Target wake time · cold turkey</div>
+          <div className="alarm-time">{fmtHHMM(schedule[0])}</div>
+          <div className="muted small" style={{ margin: 0 }}>Next alarm · {settings.approach === 'phased' ? 'phased' : 'cold turkey'}</div>
         </div>
+      </div>
+      <div className="card">
+        <label className="field">Target wake time<input type="time" value={settings.wake} onChange={(e) => setSettings({ ...settings, wake: e.target.value })} /></label>
+        <div className="segmented" style={{ marginTop: 10 }}>
+          <button className={settings.approach === 'cold' ? 'on' : ''} onClick={() => setSettings({ ...settings, approach: 'cold' })}>Cold turkey</button>
+          <button className={settings.approach === 'phased' ? 'on' : ''} onClick={() => setSettings({ ...settings, approach: 'phased' })}>Phased</button>
+        </div>
+        {settings.approach === 'phased' && (
+          <>
+            <label className="field" style={{ marginTop: 10 }}>Usual wake time<input type="time" value={settings.usual} onChange={(e) => setSettings({ ...settings, usual: e.target.value })} /></label>
+            <div className="schedule">
+              {schedule.map((t, i) => (
+                <div key={i}><small>{days[i]}</small><b>{fmtHHMM(t)}</b></div>
+              ))}
+            </div>
+            <p className="small" style={{ margin: '8px 0 0' }}>15 minutes earlier each day. Keep it up and you'll hit {fmtHHMM(settings.wake)}.</p>
+          </>
+        )}
       </div>
       <div className="card">
         <div className="graph-head"><span>Maze difficulty</span></div>

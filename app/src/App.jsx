@@ -4,6 +4,7 @@ import Alarm from './screens/Alarm.jsx'
 import Coffee from './screens/Coffee.jsx'
 import Sleep from './screens/Sleep.jsx'
 import Backdrop from './Backdrop.jsx'
+import Onboarding from './screens/Onboarding.jsx'
 
 const TABS = [
   { id: 'home', label: 'Home', icon: '☀️' },
@@ -31,7 +32,29 @@ function save(key, value) {
   }
 }
 
+const DEFAULT_SETTINGS = { wake: '06:00', bed: '23:00', approach: 'cold', usual: '07:30', difficulty: 'easy' }
+
+function loadSettings() {
+  try {
+    return JSON.parse(localStorage.getItem('we.settings'))
+  } catch {
+    return null
+  }
+}
+
 export default function App() {
+  const [settings, setSettingsState] = useState(() => loadSettings())
+  const [obTheme, setObTheme] = useState('alarm')
+  const setSettings = (next) => {
+    setSettingsState(next)
+    try {
+      localStorage.setItem('we.settings', JSON.stringify(next))
+    } catch {
+      // ignore
+    }
+  }
+  const onboarded = Boolean(settings)
+  const s = settings || DEFAULT_SETTINGS
   const [tab, setTab] = useState(() => window.location.hash.slice(1) || 'coffee')
   const [drinks, setDrinks] = useState(() => load('we.today', []))
   const [wokeOnTime, setWokeOnTime] = useState(() => load('we.wake', false))
@@ -86,17 +109,32 @@ export default function App() {
 
   return (
     <div className="stage">
-      <div className={`phone theme-${tab}`}>
-        <Backdrop tab={tab} />
+      <div className={`phone theme-${onboarded ? tab : obTheme === 'alarm' ? 'alarm' : obTheme}`}>
+        <Backdrop tab={onboarded ? tab : obTheme} />
+        {!onboarded ? (
+          <main className="screen">
+            <Onboarding
+              initial={DEFAULT_SETTINGS}
+              vessel={vessel}
+              setVessel={setVessel}
+              onTheme={setObTheme}
+              onDone={(next) => {
+                setSettings(next)
+                setTab('home')
+              }}
+            />
+          </main>
+        ) : (
+        <>
         <main className="screen">
           {tab === 'home' && (
-            <Home now={now} drinks={drinks} wokeOnTime={wokeOnTime} celebrate={celebrate} onCelebrated={() => setCelebrate(false)} />
+            <Home now={now} drinks={drinks} wokeOnTime={wokeOnTime} celebrate={celebrate} onCelebrated={() => setCelebrate(false)} settings={s} onRedoOnboarding={() => { setSettingsState(null); setObTheme('alarm'); try { localStorage.removeItem('we.settings') } catch { /* ignore */ } }} />
           )}
-          {tab === 'alarm' && <Alarm onSolved={handleWake} bedTappedAt={bedTappedAt} />}
+          {tab === 'alarm' && <Alarm onSolved={handleWake} bedTappedAt={bedTappedAt} settings={s} setSettings={setSettings} />}
           {tab === 'coffee' && (
-            <Coffee now={now} drinks={drinks} pourCount={pourCount} onAdd={addDrink} onRemove={(key) => setDrinks((list) => list.filter((d) => d.key !== key))} onClear={() => setDrinks([])} vessel={vessel} setVessel={setVessel} demoHour={demoHour} setDemoHour={setDemoHour} />
+            <Coffee now={now} drinks={drinks} pourCount={pourCount} onAdd={addDrink} onRemove={(key) => setDrinks((list) => list.filter((d) => d.key !== key))} onClear={() => setDrinks([])} vessel={vessel} setVessel={setVessel} demoHour={demoHour} setDemoHour={setDemoHour} bed={s.bed} />
           )}
-          {tab === 'sleep' && <Sleep bedTappedAt={bedTappedAt} onBed={() => setBedTappedAt(Date.now())} />}
+          {tab === 'sleep' && <Sleep bedTappedAt={bedTappedAt} onBed={() => setBedTappedAt(Date.now())} settings={s} />}
         </main>
         <nav className="nav">
           {TABS.map((t) => (
@@ -106,6 +144,8 @@ export default function App() {
             </button>
           ))}
         </nav>
+        </>
+        )}
       </div>
     </div>
   )
