@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Open the Coffee tab, search "Tim", tap a drink, and watch it pour; check the white line, red dotted line, and "mg more."
   Commit: `Add coffee screen with drink search, pour animation, and caffeine lines`
 
-- [ ] **2. Ring the alarm, solve the maze, see the rings close**
+- [x] **2. Ring the alarm, solve the maze, see the rings close**
   Becomes usable: On Alarm, pick a difficulty and tap "Ring alarm now"; the clock shakes, a maze appears; drag the walking figure from top-left to bottom-right leaving a dotted trail; you land on Home where the nested rings fill and sparkle.
   Why now: Completes the wake-up half of the kernel and the main celebration moment.
   PRD ref: `prd.md > Wake-up alarm and maze`, `prd.md > Rings, ladder, and completion`
@@ -61,3 +61,4 @@ Reflection:
 Activity mode:
 
 ## Revisions
+- Home progress (ladder, this-week counts, week columns) and the sample week were built in slice 2 instead of slice 3 — the ladder needed the sample history to show the "goal reached" moment after the maze; slice 3 is now just Sleep.
